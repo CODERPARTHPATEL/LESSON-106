@@ -29,11 +29,11 @@ movies_copy.head()
 ratings_df = rating_df.drop(['timestamp'],axis=1)
 rating_df.head()
 
-genre_columns = movies_copy.drop(['movieId','title','genres','year'])
+genre_columns = movies_copy.drop(['movieId','title','genres','year'],axis=1)
 genre_count = genre_columns.sum().sort_values(ascending=False)
 
 plt.figure(figsize=(10,5))
-plt.bar(genre_count.index,genre_count.value,color='#4C9AFF')
+plt.bar(genre_count.index,genre_count.values,color='#4C9AFF')
 plt.title('moies per genre')
 plt.xlabel('genre')
 plt.ylabel('number of movies')

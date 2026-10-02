@@ -42,10 +42,10 @@ plt.tight_layout()
 plt.show()
 
 user_input = [
-    {'title':'grand slam','rating':5.6},
-    {'title':'zero','rating':7},
-    {'title':'jumanji','rating':8.5},
-    {'title':'toy story','rating':4.5},
+    {'title':'Grand Slam','rating':5.6},
+    {'title':'Zero','rating':7},
+    {'title':'Jumanji','rating':8.5},
+    {'title':'Toy Story','rating':4.5},
 ]
 movies_input = pd.DataFrame(user_input)
 movies_input
@@ -74,19 +74,27 @@ plt.show()
 
 
 
-GenreTable =  movies_copy.set_index(movies_copy['movieID'])
+GenreTable =  movies_copy.set_index(movies_copy['movieId'])
 GenreTable = GenreTable.drop(['movieId','title','genres','year'],axis=1)
 
 Recomendation_df = ((GenreTable*UserProfile).sum(axis=1)/UserProfile.sum())
 Recomendation_df = Recomendation_df.sort_values(ascending=False)
 Recomendation_df.head()
 
-Recomendation_table= movies_df.loc[movies_df['moviesId'].isin(Recomendation_df.head(20).key)]
+
+top20_ids = Recomendation_df.head(20).index
+
+Recomendation_table = movies_df[
+
+movies_df['movieId'].isin(top20_ids)
+
+]
+
 Recomendation_table
 
 
 top10_scores = Recomendation_df.head(10)
-top10_titles = movies_df.set_index('moviesId').loc[top10_scores.index]['title']
+top10_titles = movies_df.set_index('movieId').loc[top10_scores.index]['title']
 
 
 plt.figure(figsize=(8,6))

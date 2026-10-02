@@ -40,3 +40,58 @@ plt.ylabel('number of movies')
 plt.xticks(rotation=45,ha='right')
 plt.tight_layout()
 plt.show()
+
+user_input = [
+    {'title':'grand slam','rating':5.6},
+    {'title':'zero','rating':7},
+    {'title':'jumanji','rating':8.5},
+    {'title':'toy story','rating':4.5},
+]
+movies_input = pd.DataFrame(user_input)
+movies_input
+
+input_id = movies_df[movies_df['title'].isin(movies_input['title'].tolist())]
+movies_input = pd.merge(input_id,movies_input)
+movies_input = movies_input.drop(['genres','year'],axis=1)
+movies_input
+
+movies_user = movies_copy[movies_copy['movieId'].isin(movies_input['movieId'].tolist())]
+movies_user = movies_user.reset_index(drop=True)
+
+UserGenreTable = movies_user.drop(['movieId','title','genres','year'],axis=1)
+
+UserProfile = UserGenreTable.transpose().dot(movies_input['rating'])
+UserProfile
+
+plt.figure(figsize=(10,5))
+plt.bar(UserProfile.index,UserProfile.values,color='#FF6B6B')
+plt.title('your taste profile')
+plt.xlabel('genre')
+plt.ylabel('weight')
+plt.xticks(rotation=45,ha='right')
+plt.tight_layout()
+plt.show()
+
+
+
+GenreTable =  movies_copy.set_index(movies_copy['movieID'])
+GenreTable = GenreTable.drop(['movieId','title','genres','year'],axis=1)
+
+Recomendation_df = ((GenreTable*UserProfile).sum(axis=1)/UserProfile.sum())
+Recomendation_df = Recomendation_df.sort_values(ascending=False)
+Recomendation_df.head()
+
+Recomendation_table= movies_df.loc[movies_df['moviesId'].isin(Recomendation_df.head(20).key)]
+Recomendation_table
+
+
+top10_scores = Recomendation_df.head(10)
+top10_titles = movies_df.set_index('moviesId').loc[top10_scores.index]['title']
+
+
+plt.figure(figsize=(8,6))
+plt.barh(top10_titles[::-1],top10_scores.values[::-1],color='#51CF66')
+plt.title('top 10 picks')
+plt.xlabel('match score')
+plt.tight_layout()
+plt.show()
